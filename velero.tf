@@ -2,23 +2,23 @@ locals {
   velero = merge(
     local.helm_defaults,
     {
-      enabled       = false
-      name          = local.helm_dependencies[index(local.helm_dependencies.*.name, "velero")].name
-      chart         = local.helm_dependencies[index(local.helm_dependencies.*.name, "velero")].name
-      repository    = local.helm_dependencies[index(local.helm_dependencies.*.name, "velero")].repository
-      chart_version = local.helm_dependencies[index(local.helm_dependencies.*.name, "velero")].version
+      enabled               = false
+      name                  = local.helm_dependencies[index(local.helm_dependencies.*.name, "velero")].name
+      chart                 = local.helm_dependencies[index(local.helm_dependencies.*.name, "velero")].name
+      repository            = local.helm_dependencies[index(local.helm_dependencies.*.name, "velero")].repository
+      chart_version         = local.helm_dependencies[index(local.helm_dependencies.*.name, "velero")].version
       namespace             = "velero"
       velero_priority_class = "high-priority"
       velero_cpu_limit      = "1000m"
       velero_memory_limit   = "512Mi"
       credentials           = ""
       deploy_restic         = true
-      restic_password       = "static-passw0rd"  # default velero password
+      restic_password       = "static-passw0rd" # default velero password
       restic_privileged     = false
       restic_priority_class = "high-priority"
       restic_cpu_limit      = "1000m"
       restic_memory_limit   = "1Gi"
-      
+
     },
     var.velero
   )
@@ -89,7 +89,7 @@ resource "kubernetes_namespace" "velero" {
 resource "kubernetes_secret" "velero_credentials" {
   count = local.velero["enabled"] ? 1 : 0
   metadata {
-    name = "velero-credentials"
+    name      = "velero-credentials"
     namespace = local.velero["namespace"]
   }
   data = {
@@ -101,7 +101,7 @@ resource "kubernetes_secret" "velero_credentials" {
 resource "kubernetes_secret" "restic_password" {
   count = local.velero["enabled"] && local.velero["deploy_restic"] ? 1 : 0
   metadata {
-    name = "velero-restic-credentials"
+    name      = "velero-restic-credentials"
     namespace = local.velero["namespace"]
   }
   data = {

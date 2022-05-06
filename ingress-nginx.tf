@@ -2,26 +2,26 @@ locals {
   ingress-nginx = merge(
     local.helm_defaults,
     {
-      enabled        = false
-      name           = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].name
-      chart          = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].name
-      repository     = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].repository
-      chart_version  = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].version
-      namespace      = "ingress-nginx"
-      cpu_limit      = "500m"
-      memory_limit   = "128Mi"
-      priority_class = "highest-priority"
-      config         = {}
-      hostport       = false
-      extra_args     = {}
-      tcp            = {}
-      udp            = {}
-      kind           = "DaemonSet"
-      metrics        = true
-      node_selector  = {}
+      enabled                          = false
+      name                             = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].name
+      chart                            = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].name
+      repository                       = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].repository
+      chart_version                    = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].version
+      namespace                        = "ingress-nginx"
+      cpu_limit                        = "500m"
+      memory_limit                     = "128Mi"
+      priority_class                   = "highest-priority"
+      config                           = {}
+      hostport                         = false
+      extra_args                       = {}
+      tcp                              = {}
+      udp                              = {}
+      kind                             = "DaemonSet"
+      metrics                          = true
+      node_selector                    = {}
       termination_grace_period         = 300
       admission_webhook                = true
-      admission_webhook_failure_policy = "Fail" 
+      admission_webhook_failure_policy = "Fail"
     },
     var.ingress-nginx
   )
@@ -49,7 +49,7 @@ controller:
 
   terminationGracePeriodSeconds: ${local.ingress-nginx["termination_grace_period"]}
 
-  nodeSelector: ${jsonencode(merge({"kubernetes.io/os": "linux"}, local.ingress-nginx["node_selector"]))}
+  nodeSelector: ${jsonencode(merge({ "kubernetes.io/os" : "linux" }, local.ingress-nginx["node_selector"]))}
 
   resources:
     limits:

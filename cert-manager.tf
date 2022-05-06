@@ -2,12 +2,12 @@ locals {
   cert-manager = merge(
     local.helm_defaults,
     {
-      enabled        = false
-      name           = local.helm_dependencies[index(local.helm_dependencies.*.name, "cert-manager")].name
-      chart          = local.helm_dependencies[index(local.helm_dependencies.*.name, "cert-manager")].name
-      repository     = local.helm_dependencies[index(local.helm_dependencies.*.name, "cert-manager")].repository
-      chart_version  = local.helm_dependencies[index(local.helm_dependencies.*.name, "cert-manager")].version
-      namespace      = "cert-manager"
+      enabled       = false
+      name          = local.helm_dependencies[index(local.helm_dependencies.*.name, "cert-manager")].name
+      chart         = local.helm_dependencies[index(local.helm_dependencies.*.name, "cert-manager")].name
+      repository    = local.helm_dependencies[index(local.helm_dependencies.*.name, "cert-manager")].repository
+      chart_version = local.helm_dependencies[index(local.helm_dependencies.*.name, "cert-manager")].version
+      namespace     = "cert-manager"
     },
     var.cert-manager
   )

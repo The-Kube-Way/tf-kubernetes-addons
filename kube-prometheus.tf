@@ -2,11 +2,11 @@ locals {
   kube-prometheus = merge(
     local.helm_defaults,
     {
-      enabled       = false
-      name          = "prom1"
-      chart         = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].name
-      repository    = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].repository
-      chart_version = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].version
+      enabled                    = false
+      name                       = "prom1"
+      chart                      = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].name
+      repository                 = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].repository
+      chart_version              = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].version
       namespace                  = "prometheus"
       prometheus_cpu_limit       = "500m"
       prometheus_memory_limit    = "1Gi"
@@ -14,12 +14,12 @@ locals {
       alertmanager_memory_limit  = "128Mi"
       persistence                = false
       fix_volume_permissions     = false
-      storage_class              = ""  # default if empty
+      storage_class              = "" # default if empty
       size                       = "4Gi"
       retention                  = "96h"
       alertmanager_config        = ""
-      node_exporter_host_network = false  # If nodes are not in a bastion then hostNetwork to true exposes metrics to internet
-      kube_proxy = true
+      node_exporter_host_network = false # If nodes are not in a bastion then hostNetwork to true exposes metrics to internet
+      kube_proxy                 = true
     },
     var.kube-prometheus
   )

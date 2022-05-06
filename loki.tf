@@ -2,11 +2,11 @@ locals {
   loki = merge(
     local.helm_defaults,
     {
-      enabled       = false
-      name          = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].name
-      chart         = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].name
-      repository    = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].repository
-      chart_version = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].version
+      enabled              = false
+      name                 = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].name
+      chart                = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].name
+      repository           = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].repository
+      chart_version        = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].version
       namespace            = "loki"
       s3_enabled           = true
       s3_endpoint          = ""

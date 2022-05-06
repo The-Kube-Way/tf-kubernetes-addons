@@ -2,11 +2,11 @@ locals {
   grafana = merge(
     local.helm_defaults,
     {
-      enabled       = false
-      name          = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].name
-      chart         = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].name
-      repository    = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].repository
-      chart_version = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].version
+      enabled                 = false
+      name                    = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].name
+      chart                   = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].name
+      repository              = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].repository
+      chart_version           = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].version
       namespace               = "default"
       create_ns               = false
       cpu_limit               = "200m"
