@@ -7,22 +7,26 @@ locals {
       chart                = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].name
       repository           = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].repository
       chart_version        = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].version
-      namespace            = "loki"
-      s3_enabled           = true
-      s3_endpoint          = ""
-      s3_region            = ""
-      s3_bucket            = ""
-      s3_access_key_id     = ""
-      s3_secret_access_key = ""
-      cpu_limit            = "200m"
-      memory_limit         = "256Mi"
-      persistence          = false
+      namespace              = "loki"
+      s3_enabled             = true
+      s3_endpoint            = ""
+      s3_region              = ""
+      s3_bucket              = ""
+      s3_access_key_id       = ""
+      s3_secret_access_key   = ""
+      cpu_limit              = "200m"
+      memory_limit           = "256Mi"
+      persistence            = false
+      default_network_policy = true
     },
     var.loki
   )
 
   values_loki = <<VALUES
 config:
+  auth_enabled: false
+  server:
+    log_level: info
   limits_config:
     max_entries_limit_per_query: 50000
   schema_config:
@@ -62,7 +66,7 @@ resources:
     memory: ${local.loki["memory_limit"]}
 
 serviceMonitor:
-  enabled: true
+  enabled: ${local.kube-prometheus["enabled"]}
   interval: "60s"
 VALUES
 }
@@ -107,6 +111,107 @@ resource "helm_release" "loki" {
   ]
 
   depends_on = [
-    helm_release.kube-prometheus
+    helm_release.kube-prometheus,
+    kubernetes_namespace.loki
   ]
+}
+
+
+resource "kubernetes_network_policy" "loki_default_deny" {
+  count = local.loki["enabled"] && local.loki["default_network_policy"] ? 1 : 0
+    metadata {
+    name      = "${local.loki["name"]}-default-deny"
+    namespace = local.loki["namespace"]
+  }
+  spec {
+    pod_selector {
+      match_labels = {
+        app = "loki"
+      }
+    }
+    policy_types = ["Ingress"]
+  }
+}
+
+
+resource "kubernetes_network_policy" "loki_allow_namespace" {
+  count = local.loki["enabled"] && local.loki["default_network_policy"] ? 1 : 0
+    metadata {
+    name      = "${local.loki["name"]}-allow-namespace"
+    namespace = local.loki["namespace"]
+  }
+  spec {
+    pod_selector {
+      match_labels = {
+        app = "loki"
+      }
+    }
+    ingress {
+      from {
+        namespace_selector {
+          match_labels = {
+            "kubernetes.io/metadata.name" = local.loki["namespace"]
+          }
+        }
+      }
+    }
+    policy_types = ["Ingress"]
+  }
+}
+
+
+resource "kubernetes_network_policy" "loki_allow_prometheus_namespace" {
+  count = local.loki["enabled"] && local.loki["default_network_policy"] && local.kube-prometheus["enabled"] ? 1 : 0
+    metadata {
+    name      = "${local.loki["name"]}-allow-prometheus-namespace"
+    namespace = local.loki["namespace"]
+  }
+  spec {
+    pod_selector {
+      match_labels = {
+        app = "loki"
+      }
+    }
+    ingress {
+      from {
+        namespace_selector {
+          match_labels = {
+            "kubernetes.io/metadata.name" = local.kube-prometheus["namespace"]
+          }
+        }
+      }
+    }
+    policy_types = ["Ingress"]
+  }
+}
+
+
+resource "kubernetes_network_policy" "loki_allow_grafana" {
+  count = local.loki["enabled"] && local.loki["default_network_policy"] && local.grafana["enabled"] ? 1 : 0
+  metadata {
+    name      = "${local.loki["name"]}-allow-grafana"
+    namespace = local.loki["namespace"]
+  }
+  spec {
+    pod_selector {
+      match_labels = {
+        app = "loki"
+      }
+    }
+    ingress {
+      from {
+        namespace_selector {
+          match_labels = {
+            "kubernetes.io/metadata.name" = local.grafana["namespace"]
+          }
+        }
+        pod_selector {
+          match_labels = {
+            "app.kubernetes.io/name" = "grafana"
+          }
+        }
+      }
+    }
+    policy_types = ["Ingress"]
+  }
 }
