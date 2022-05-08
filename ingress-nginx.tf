@@ -9,7 +9,7 @@ locals {
       chart_version                    = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].version
       namespace                        = "ingress-nginx"
       cpu_limit                        = "500m"
-      memory_limit                     = "128Mi"
+      memory_limit                     = "256Mi"
       priority_class                   = "highest-priority"
       config                           = {}
       hostport                         = false
