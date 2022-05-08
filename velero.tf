@@ -69,8 +69,8 @@ restic:
       cpu: 100m
       memory: 256Mi
     limits:
-      cpu: ${local.velero["velero_cpu_limit"]}
-      memory: ${local.velero["velero_memory_limit"]}
+      cpu: ${local.velero["restic_cpu_limit"]}
+      memory: ${local.velero["restic_memory_limit"]}
 VALUES
 }
 
