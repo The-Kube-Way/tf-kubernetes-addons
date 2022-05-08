@@ -1,0 +1,54 @@
+{
+  "extends": [
+    ":separateMajorReleases",
+    ":ignoreUnstable",
+    ":prImmediately",
+    ":updateNotScheduled",
+    ":automergeDisabled",
+    ":disableRateLimiting",
+    ":ignoreModulesAndTests",
+    ":autodetectPinVersions",
+    ":automergeDigest",
+    ":automergePatch",
+    ":automergeMinor"
+  ],
+  "baseBranches": ["master"],
+  "enabledManagers": ["helmv3", "github-actions", "pre-commit", "terraform"],
+  "semanticCommits": "enabled",
+  "automergeType": "pr",
+  "automergeComment": "renovate:merge",
+  "helmv3": {
+    "enabled": true,
+    "fileMatch": ["(^|/)helm-dependencies.yaml$"]
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "semanticCommitScope": "ci",
+      "semanticCommitType": "chore"
+    },
+    {
+      "matchManagers": ["pre-commit"],
+      "semanticCommitScope": "ci",
+      "semanticCommitType": "chore"
+    },
+    {
+      "matchManagers": ["helmv3"],
+      "semanticCommitScope": "charts",
+      "semanticCommitType": "fix",
+      "matchUpdateTypes": ["patch", "digest"]
+    },
+    {
+      "matchManagers": ["helmv3"],
+      "semanticCommitScope": "charts",
+      "semanticCommitType": "feat",
+      "matchUpdateTypes": ["major", "minor"]
+    },
+    {
+      "matchManagers": ["terraform"],
+      "semanticCommitScope": "tf",
+      "semanticCommitType": "feat",
+      "automerge": false
+    }
+  ]
+}
