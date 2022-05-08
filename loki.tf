@@ -2,11 +2,11 @@ locals {
   loki = merge(
     local.helm_defaults,
     {
-      enabled              = false
-      name                 = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].name
-      chart                = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].name
-      repository           = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].repository
-      chart_version        = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].version
+      enabled                = false
+      name                   = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].name
+      chart                  = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].name
+      repository             = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].repository
+      chart_version          = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].version
       namespace              = "loki"
       s3_enabled             = true
       s3_endpoint            = ""
@@ -119,7 +119,7 @@ resource "helm_release" "loki" {
 
 resource "kubernetes_network_policy" "loki_default_deny" {
   count = local.loki["enabled"] && local.loki["default_network_policy"] ? 1 : 0
-    metadata {
+  metadata {
     name      = "${local.loki["name"]}-default-deny"
     namespace = local.loki["namespace"]
   }
@@ -136,7 +136,7 @@ resource "kubernetes_network_policy" "loki_default_deny" {
 
 resource "kubernetes_network_policy" "loki_allow_namespace" {
   count = local.loki["enabled"] && local.loki["default_network_policy"] ? 1 : 0
-    metadata {
+  metadata {
     name      = "${local.loki["name"]}-allow-namespace"
     namespace = local.loki["namespace"]
   }
@@ -162,7 +162,7 @@ resource "kubernetes_network_policy" "loki_allow_namespace" {
 
 resource "kubernetes_network_policy" "loki_allow_prometheus_namespace" {
   count = local.loki["enabled"] && local.loki["default_network_policy"] && local.kube-prometheus["enabled"] ? 1 : 0
-    metadata {
+  metadata {
     name      = "${local.loki["name"]}-allow-prometheus-namespace"
     namespace = local.loki["namespace"]
   }
