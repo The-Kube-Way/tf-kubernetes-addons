@@ -18,7 +18,7 @@ dependencies:
     version: 6.10.4
     repository: https://charts.bitnami.com/bitnami
   - name: velero
-    version: 2.29.4
+    version: 2.29.5
     repository: https://vmware-tanzu.github.io/helm-charts
   - name: ingress-nginx
     version: 4.1.1
