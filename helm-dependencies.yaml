@@ -12,7 +12,7 @@ dependencies:
     version: 7.6.34
     repository: https://charts.bitnami.com/bitnami
   - name: kubernetes-event-exporter
-    version: 1.4.7
+    version: 1.4.8
     repository: https://charts.bitnami.com/bitnami
   - name: kube-prometheus
     version: 6.10.4
