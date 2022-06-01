@@ -9,7 +9,7 @@ dependencies:
     version: 4.2.1
     repository: https://grafana.github.io/helm-charts
   - name: grafana
-    version: 7.9.1
+    version: 7.9.3
     repository: https://charts.bitnami.com/bitnami
   - name: kubernetes-event-exporter
     version: 1.4.12
