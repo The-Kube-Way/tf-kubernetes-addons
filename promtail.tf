@@ -29,7 +29,8 @@ serviceMonitor:
   interval: "60s"
 
 config:
-  lokiAddress: ${local.promtail["loki_address"]}
+  clients:
+    - url: ${local.promtail["loki_address"]}
   snippets:
     pipelineStages:
       - cri: {}
