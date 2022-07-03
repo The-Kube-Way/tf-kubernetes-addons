@@ -16,7 +16,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - uses: actions/setup-python@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: 'pypy3.9'
 
     - name: 'asdf:install'
       uses: asdf-vm/actions/install@v1
