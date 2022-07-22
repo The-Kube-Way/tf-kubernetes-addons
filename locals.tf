@@ -12,7 +12,7 @@ locals {
     reset_values          = false
     reuse_values          = false
     skip_crds             = false
-    timeout               = 300
+    timeout               = 900
     verify                = false
     wait                  = true
     extra_values          = ""
