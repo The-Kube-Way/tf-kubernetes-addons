@@ -24,6 +24,9 @@ locals {
   )
 
   values_velero = <<VALUES
+image:
+  # v1.9.0 is buggy
+  tag: v1.8.1
 resources:
   requests:
     cpu: 100m
