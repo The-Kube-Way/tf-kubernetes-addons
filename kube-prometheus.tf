@@ -69,7 +69,7 @@ prometheus:
      - name: prometheus-${local.kube-prometheus["name"]}-kube-prometheus-prometheus-db
        mountPath: /prometheus
   %{endif}
-  retentionSize: ${replace(local.kube-prometheus["size"], "Gi", "GB")}
+  retentionSize: ${floor(tonumber(replace(local.kube-prometheus["size"], "Gi", "")) * 1024 * 0.8)}MB  # 80% of PVC
   disableCompaction: ${local.kube-prometheus["thanos_enabled"]}
   thanos:
     create: ${local.kube-prometheus["thanos_enabled"]}
