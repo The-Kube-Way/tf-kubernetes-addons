@@ -2,35 +2,47 @@ locals {
   kube-prometheus = merge(
     local.helm_defaults,
     {
-      enabled                    = false
-      name                       = "prom1"
-      chart                      = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].name
-      repository                 = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].repository
-      chart_version              = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].version
-      namespace                  = "prometheus"
-      prometheus_cpu_limit       = "500m"
-      prometheus_memory_limit    = "1Gi"
-      alertmanager_cpu_limit     = "100m"
-      alertmanager_memory_limit  = "128Mi"
-      persistence                = false
-      fix_volume_permissions     = false
-      storage_class              = "" # default if empty
-      size                       = "4Gi"
-      retention                  = "96h"
-      alertmanager_config        = ""
-      node_exporter_host_network = false # If nodes are not in a bastion then hostNetwork to true exposes metrics to internet
-      kube_proxy                 = true
+      enabled                     = false
+      name                        = "prom1"
+      chart                       = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].name
+      repository                  = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].repository
+      chart_version               = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].version
+      namespace                   = "prometheus"
+      prometheus_cpu_request      = "50m"
+      prometheus_cpu_limit        = "500m"
+      prometheus_memory_request   = "512Mi"
+      prometheus_memory_limit     = "1Gi"
+      alertmanager_cpu_request    = "10m"
+      alertmanager_cpu_limit      = "100m"
+      alertmanager_memory_request = "128Mi"
+      alertmanager_memory_limit   = "128Mi"
+      persistence                 = false
+      fix_volume_permissions      = false
+      storage_class               = ""    # default if empty
+      size                        = "4Gi" # You must use "Gi" as it will be used for retentionSize and PVC size
+      alertmanager_config         = ""
+      node_exporter_host_network  = false # If nodes are not in a bastion then hostNetwork to true exposes metrics to internet
+      kube_proxy                  = true
+      thanos_enabled              = false
+      thanos_s3_endpoint          = ""
+      thanos_s3_region            = ""
+      thanos_s3_bucket            = ""
+      thanos_s3_access_key_id     = ""
+      thanos_s3_secret_access_key = ""
+      thanos_cpu_request          = "10m"
+      thanos_cpu_limit            = "100m"
+      thanos_memory_request       = "128Mi"
+      thanos_memory_limit         = "256Mi"
     },
     var.kube-prometheus
   )
 
   values_kube-prometheus = <<VALUES
 prometheus:
-  retention: ${local.kube-prometheus["retention"]}
   resources:
     requests:
-      cpu: 50m
-      memory: 512Mi
+      cpu: ${local.kube-prometheus["prometheus_cpu_request"]}
+      memory: ${local.kube-prometheus["prometheus_memory_request"]}
     limits:
       cpu: ${local.kube-prometheus["prometheus_cpu_limit"]}
       memory: ${local.kube-prometheus["prometheus_memory_limit"]}
@@ -57,11 +69,25 @@ prometheus:
      - name: prometheus-${local.kube-prometheus["name"]}-kube-prometheus-prometheus-db
        mountPath: /prometheus
   %{endif}
+  retentionSize: ${replace(local.kube-prometheus["size"], "Gi", "GB")}
+  disableCompaction: ${local.kube-prometheus["thanos_enabled"]}
+  thanos:
+    create: ${local.kube-prometheus["thanos_enabled"]}
+    objectStorageConfig:
+       secretName: "${local.kube-prometheus["name"]}-thanos-config"
+       secretKey: thanos.yaml
+    resources:
+      requests:
+         cpu: ${local.kube-prometheus["thanos_cpu_request"]}
+         memory: ${local.kube-prometheus["thanos_memory_request"]}
+      limits:
+         cpu: ${local.kube-prometheus["thanos_cpu_limit"]}
+         memory: ${local.kube-prometheus["thanos_memory_limit"]}
 
 alertmanager:
   requests:
-    cpu: 10m
-    memory: 128Mi
+    cpu: ${local.kube-prometheus["alertmanager_cpu_request"]}
+    memory: ${local.kube-prometheus["alertmanager_memory_request"]}
   limits:
     cpu: ${local.kube-prometheus["alertmanager_cpu_limit"]}
     memory: ${local.kube-prometheus["alertmanager_memory_limit"]}
@@ -130,5 +156,24 @@ resource "kubernetes_secret" "alertmanager_config" {
   }
   data = {
     "alertmanager.yaml" = local.kube-prometheus["alertmanager_config"]
+  }
+}
+
+resource "kubernetes_secret" "thanos_config" {
+  count = local.kube-prometheus["enabled"] && local.kube-prometheus["thanos_enabled"] ? 1 : 0
+  metadata {
+    name      = "${local.kube-prometheus["name"]}-thanos-config"
+    namespace = local.kube-prometheus["namespace"]
+  }
+  data = {
+    "thanos.yaml" = <<CONFIG
+type: S3
+config:
+  bucket: ${local.kube-prometheus["thanos_s3_bucket"]}
+  endpoint: ${local.kube-prometheus["thanos_s3_endpoint"]}
+  region: ${local.kube-prometheus["thanos_s3_region"]}
+  access_key: ${local.kube-prometheus["thanos_s3_access_key_id"]}
+  secret_key: ${local.kube-prometheus["thanos_s3_secret_access_key"]}
+CONFIG
   }
 }
