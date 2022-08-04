@@ -25,7 +25,7 @@ resources:
     memory: 64Mi
 
 serviceMonitor:
-  enabled: true
+  enabled: ${local.kube-prometheus["enabled"]}
   interval: "60s"
 
 config:
