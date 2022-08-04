@@ -16,6 +16,7 @@ locals {
       ingress_tls_cert_secret = ""
       ingress_whitelist_ips   = ""
       fix_volume_permissions  = false
+      pvc                     = ""
     },
     var.grafana
   )
