@@ -18,7 +18,14 @@ locals {
       restic_priority_class = "high-priority"
       restic_cpu_limit      = "1000m"
       restic_memory_limit   = "1Gi"
-
+      backup_storage_location = {
+        enabled             = false
+        read_only           = false
+        s3_url              = ""
+        s3_region           = ""
+        s3_force_path_style = ""
+        s3_bucket           = ""
+      }
     },
     var.velero
   )
@@ -55,12 +62,23 @@ upgradeCRDs: true
 
 configuration:
   provider: aws
+%{if local.velero["backup_storage_location"]["enabled"]}
+  backupStorageLocation:
+    name: default
+    bucket: ${local.velero["backup_storage_location"]["s3_bucket"]}
+    default: true
+    accessMode: %{if local.velero["backup_storage_location"]["read_only"]}ReadOnly%{else}ReadWrite%{endif}
+    config:
+      s3Url: ${local.velero["backup_storage_location"]["s3_url"]}
+      region: ${local.velero["backup_storage_location"]["s3_region"]}
+      s3ForcePathStyle: ${local.velero["backup_storage_location"]["s3_force_path_style"]}
+%{endif}
 
 credentials:
   existingSecret: velero-credentials
 
-backupsEnabled: false  # Do not create a default backup location
-snapshotsEnabled: true
+backupsEnabled: ${local.velero["backup_storage_location"]["enabled"]}
+snapshotsEnabled: false
 
 deployRestic: ${local.velero["deploy_restic"]}
 restic:
