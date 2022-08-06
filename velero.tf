@@ -23,7 +23,7 @@ locals {
         read_only           = false
         s3_url              = ""
         s3_region           = ""
-        s3_force_path_style = ""
+        s3_force_path_style = false
         s3_bucket           = ""
       }
     },

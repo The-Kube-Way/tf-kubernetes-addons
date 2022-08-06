@@ -48,19 +48,57 @@ module "kubernetes-addons" {
   }
   velero = {
     enabled = true
-    restic_password = XXX
+    restic_password = "XXX"
     credentials = <<VALUES
 [default]
 aws_access_key_id = XXX
 aws_secret_access_key = XXX
+VALUES
+    backup_storage_location = {
+        enabled             = true
+        read_only           = false
+        s3_url              = "XXX"
+        s3_region           = "XXX"
+        s3_force_path_style = false
+        s3_bucket           = "XXX"
+      }
   }
   kube-prometheus = {
     enabled = true
-    persistence = false
+    persistence = true
+    alertmanager_config = <<VALUES
+[...]
+VALUES
+    thanos_enabled              = true
+    thanos_s3_endpoint          = "XXX"
+    thanos_s3_region            = "XXX"
+    thanos_s3_bucket            = "XXX"
+    thanos_s3_access_key_id     = "XXX"
+    thanos_s3_secret_access_key = "XXX"
+  }
+  grafana = {
+    enabled = true
+    pvc = "pvc-grafana"
+  }
+  ingress-nginx= {
+    enabled = true
+    admission_webhook = true
+    config = {
+      enable-ocsp = "true"
+      ssl-protocols = "TLSv1.2 TLSv1.3"
+      server-tokens = "false"
+    }
+    tcp = {
+      53 = "default/nsd:53"
+    }
+    udp = {
+      53 = "default/nsd:53"
+    }
   }
 }
 ```
 
 # Chart updates
 
-Charts version are automatically updated using [Renovate](https://renovatebot.com/).
+Chart versions are automatically updated using [Renovate](https://renovatebot.com/).
+Major versions are merged manually.
