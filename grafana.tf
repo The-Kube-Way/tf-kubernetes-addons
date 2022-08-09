@@ -104,4 +104,8 @@ resource "helm_release" "grafana" {
     local.values_grafana,
     local.grafana["extra_values"]
   ]
+
+  depends_on = [
+    kubernetes_namespace.grafana
+  ]
 }

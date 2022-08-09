@@ -56,7 +56,7 @@ metrics:
   enabled: true
   scrapeInterval: 60s
   serviceMonitor:
-    enabled: true
+    enabled: ${local.kube-prometheus["enabled"]}
 
 upgradeCRDs: true
 
@@ -161,7 +161,6 @@ resource "helm_release" "velero" {
   depends_on = [
     kubernetes_namespace.velero,
     kubernetes_secret.velero_credentials,
-    kubernetes_secret.restic_password,
-    helm_release.kube-prometheus
+    kubernetes_secret.restic_password
   ]
 }

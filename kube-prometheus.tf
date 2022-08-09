@@ -145,6 +145,8 @@ resource "helm_release" "kube-prometheus" {
 
   depends_on = [
     kubernetes_namespace.prometheus,
+    kubernetes_secret.alertmanager_config,
+    kubernetes_secret.thanos_config
   ]
 }
 

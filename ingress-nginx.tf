@@ -66,7 +66,7 @@ controller:
   metrics:
     enabled: ${local.ingress-nginx["metrics"]}
     serviceMonitor:
-      enabled: true
+      enabled: ${local.kube-prometheus["enabled"]}
 
   priorityClassName: ${local.ingress-nginx["priority_class"]}
 
@@ -116,6 +116,6 @@ resource "helm_release" "ingress_nginx" {
   ]
 
   depends_on = [
-    helm_release.kube-prometheus
+    kubernetes_namespace.ingress_nginx
   ]
 }

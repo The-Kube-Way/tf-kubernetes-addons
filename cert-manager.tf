@@ -55,4 +55,8 @@ resource "helm_release" "cert_manager" {
     local.values_cert-manager,
     local.cert-manager["extra_values"]
   ]
+
+  depends_on = [
+    kubernetes_namespace.cert_manager
+  ]
 }

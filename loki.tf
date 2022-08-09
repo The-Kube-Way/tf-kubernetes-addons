@@ -111,7 +111,6 @@ resource "helm_release" "loki" {
   ]
 
   depends_on = [
-    helm_release.kube-prometheus,
     kubernetes_namespace.loki
   ]
 }

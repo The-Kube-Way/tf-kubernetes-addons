@@ -74,6 +74,6 @@ resource "helm_release" "promtail" {
   ]
 
   depends_on = [
-    helm_release.kube-prometheus
+    helm_release.loki
   ]
 }
