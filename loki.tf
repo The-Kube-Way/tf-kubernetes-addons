@@ -130,6 +130,10 @@ resource "kubernetes_network_policy" "loki_default_deny" {
     }
     policy_types = ["Ingress"]
   }
+
+  depends_on = [
+    kubernetes_namespace.loki
+  ]
 }
 
 
@@ -156,6 +160,10 @@ resource "kubernetes_network_policy" "loki_allow_namespace" {
     }
     policy_types = ["Ingress"]
   }
+
+  depends_on = [
+    kubernetes_namespace.loki
+  ]
 }
 
 
@@ -182,6 +190,10 @@ resource "kubernetes_network_policy" "loki_allow_prometheus_namespace" {
     }
     policy_types = ["Ingress"]
   }
+
+  depends_on = [
+    kubernetes_namespace.loki
+  ]
 }
 
 
@@ -213,4 +225,8 @@ resource "kubernetes_network_policy" "loki_allow_grafana" {
     }
     policy_types = ["Ingress"]
   }
+
+  depends_on = [
+    kubernetes_namespace.loki
+  ]
 }
