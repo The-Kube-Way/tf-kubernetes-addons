@@ -112,6 +112,9 @@ resource "kubernetes_secret" "velero_credentials" {
   metadata {
     name      = "velero-credentials"
     namespace = local.velero["namespace"]
+    annotations = {
+      "velero.io/exclude-from-backup" = "true"
+    }
   }
   data = {
     cloud = local.velero["credentials"]
@@ -128,6 +131,9 @@ resource "kubernetes_secret" "restic_password" {
   metadata {
     name      = "velero-restic-credentials"
     namespace = local.velero["namespace"]
+    annotations = {
+      "velero.io/exclude-from-backup" = "true"
+    }
   }
   data = {
     repository-password = local.velero["restic_password"]
