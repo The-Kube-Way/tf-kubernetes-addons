@@ -116,6 +116,10 @@ resource "kubernetes_secret" "velero_credentials" {
   data = {
     cloud = local.velero["credentials"]
   }
+
+  depends_on = [
+    kubernetes_namespace.velero
+  ]
 }
 
 
@@ -128,6 +132,10 @@ resource "kubernetes_secret" "restic_password" {
   data = {
     repository-password = local.velero["restic_password"]
   }
+
+  depends_on = [
+    kubernetes_namespace.velero
+  ]
 }
 
 
