@@ -26,6 +26,7 @@ locals {
         s3_force_path_style = false
         s3_bucket           = ""
       }
+      service_monitor = local.kube-prometheus["enabled"]
     },
     var.velero
   )
@@ -56,7 +57,7 @@ metrics:
   enabled: true
   scrapeInterval: 60s
   serviceMonitor:
-    enabled: ${local.kube-prometheus["enabled"]}
+    enabled: ${local.velero["service_monitor"]}
 
 upgradeCRDs: true
 
@@ -175,6 +176,7 @@ resource "helm_release" "velero" {
   depends_on = [
     kubernetes_namespace.velero,
     kubernetes_secret.velero_credentials,
-    kubernetes_secret.restic_password
+    kubernetes_secret.restic_password,
+    helm_release.kube-prometheus
   ]
 }

@@ -2,15 +2,16 @@ locals {
   promtail = merge(
     local.helm_defaults,
     {
-      enabled       = false
-      name          = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].name
-      chart         = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].name
-      repository    = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].repository
-      chart_version = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].version
-      namespace     = "loki"
-      loki_address  = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push"
-      cpu_limit     = "200m"
-      memory_limit  = "64Mi"
+      enabled         = false
+      name            = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].name
+      chart           = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].name
+      repository      = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].repository
+      chart_version   = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].version
+      namespace       = "loki"
+      loki_address    = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push"
+      cpu_limit       = "200m"
+      memory_limit    = "64Mi"
+      service_monitor = local.kube-prometheus["enabled"]
     },
     var.promtail
   )
@@ -25,7 +26,7 @@ resources:
     memory: 64Mi
 
 serviceMonitor:
-  enabled: ${local.kube-prometheus["enabled"]}
+  enabled: ${local.promtail["service_monitor"]}
   interval: "60s"
 
 config:

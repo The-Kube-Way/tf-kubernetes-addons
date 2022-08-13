@@ -18,6 +18,7 @@ locals {
       memory_limit           = "256Mi"
       persistence            = false
       default_network_policy = true
+      service_monitor        = local.kube-prometheus["enabled"]
     },
     var.loki
   )
@@ -66,7 +67,7 @@ resources:
     memory: ${local.loki["memory_limit"]}
 
 serviceMonitor:
-  enabled: ${local.kube-prometheus["enabled"]}
+  enabled: ${local.loki["service_monitor"]}
   interval: "60s"
 VALUES
 }
@@ -111,7 +112,8 @@ resource "helm_release" "loki" {
   ]
 
   depends_on = [
-    kubernetes_namespace.loki
+    kubernetes_namespace.loki,
+    helm_release.kube-prometheus
   ]
 }
 

@@ -8,7 +8,7 @@ locals {
       repository     = local.helm_dependencies[index(local.helm_dependencies.*.name, "kubernetes-event-exporter")].repository
       chart_version  = local.helm_dependencies[index(local.helm_dependencies.*.name, "kubernetes-event-exporter")].version
       namespace      = "kube-system"
-      priority_class = "highest-priority"
+      priority_class = "highest-priority" # Update depends_on too
     },
     var.kubernetes_event_exporter
   )
@@ -62,5 +62,9 @@ resource "helm_release" "kubernetes_event_exporter" {
   values = [
     local.values_kubernetes_event_exporter,
     local.kubernetes_event_exporter["extra_values"]
+  ]
+
+  depends_on = [
+    kubernetes_priority_class.highest_priority
   ]
 }

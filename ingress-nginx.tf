@@ -18,6 +18,7 @@ locals {
       udp                              = {}
       kind                             = "DaemonSet"
       metrics                          = true
+      service_monitor                  = local.kube-prometheus["enabled"]
       node_selector                    = {}
       termination_grace_period         = 300
       admission_webhook                = true
@@ -66,7 +67,7 @@ controller:
   metrics:
     enabled: ${local.ingress-nginx["metrics"]}
     serviceMonitor:
-      enabled: ${local.kube-prometheus["enabled"]}
+      enabled: ${local.ingress-nginx["service_monitor"]}
 
   priorityClassName: ${local.ingress-nginx["priority_class"]}
 
@@ -116,6 +117,7 @@ resource "helm_release" "ingress_nginx" {
   ]
 
   depends_on = [
-    kubernetes_namespace.ingress_nginx
+    kubernetes_namespace.ingress_nginx,
+    helm_release.kube-prometheus
   ]
 }
