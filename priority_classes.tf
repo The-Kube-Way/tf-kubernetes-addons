@@ -1,4 +1,16 @@
+locals {
+  priority_classes = merge(
+    {
+      enabled          = false
+      normal           = true
+      high_priority    = true
+      highest_priority = true
+    },
+    var.priority_classes
+  )
+}
 resource "kubernetes_priority_class" "normal" {
+  count = local.priority_classes["enabled"] && local.priority_classes["normal"] ? 1 : 0
   metadata {
     name = "normal"
   }
@@ -8,6 +20,7 @@ resource "kubernetes_priority_class" "normal" {
 }
 
 resource "kubernetes_priority_class" "high_priority" {
+  count = local.priority_classes["enabled"] && local.priority_classes["high_priority"] ? 1 : 0
   metadata {
     name = "high-priority"
   }
@@ -16,6 +29,7 @@ resource "kubernetes_priority_class" "high_priority" {
 }
 
 resource "kubernetes_priority_class" "highest_priority" {
+  count = local.priority_classes["enabled"] && local.priority_classes["highest_priority"] ? 1 : 0
   metadata {
     name = "highest-priority"
   }

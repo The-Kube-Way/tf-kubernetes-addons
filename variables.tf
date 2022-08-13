@@ -4,6 +4,12 @@ variable "helm_defaults" {
   default     = {}
 }
 
+variable "priority_classes" {
+  description = "Customize priority classes, see `priority_classes.tf` for supported values"
+  type        = any
+  default     = {}
+}
+
 variable "kube-prometheus" {
   description = "Customize kube-prometheus chart, see `kube-prometheus.tf` for supported values"
   type        = any
