@@ -15,7 +15,7 @@ dependencies:
     version: 1.4.21
     repository: https://charts.bitnami.com/bitnami
   - name: kube-prometheus
-    version: 8.0.15
+    version: 8.0.16
     repository: https://charts.bitnami.com/bitnami
   - name: velero
     version: 2.31.1
