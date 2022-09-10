@@ -57,3 +57,9 @@ variable "cert-manager" {
   type        = any
   default     = {}
 }
+
+variable "kubernetes-replicator" {
+  description = "Customize kubernetes-replicator chart, see `kubernetes-replicator.tf` for supported values"
+  type        = any
+  default     = {}
+}

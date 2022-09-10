@@ -26,3 +26,6 @@ dependencies:
   - name: cert-manager
     version: v1.9.1
     repository: https://charts.jetstack.io
+  - name: kubernetes-replicator
+    version: v2.7.3
+    repository: https://helm.mittwald.de
