@@ -2,21 +2,17 @@ locals {
   grafana = merge(
     local.helm_defaults,
     {
-      enabled                 = false
-      name                    = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].name
-      chart                   = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].name
-      repository              = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].repository
-      chart_version           = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].version
-      namespace               = "default"
-      create_ns               = false
-      cpu_limit               = "200m"
-      memory_limit            = "256Mi"
-      ingress_hostname        = ""
-      ingress_tls_cert_host   = ""
-      ingress_tls_cert_secret = ""
-      ingress_whitelist_ips   = ""
-      fix_volume_permissions  = false
-      pvc                     = ""
+      enabled                = false
+      name                   = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].name
+      chart                  = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].name
+      repository             = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].repository
+      chart_version          = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].version
+      namespace              = "default"
+      create_ns              = false
+      cpu_limit              = "200m"
+      memory_limit           = "256Mi"
+      root_url               = ""
+      fix_volume_permissions = false
     },
     var.grafana
   )
@@ -40,26 +36,20 @@ locals {
           memory: ${local.grafana["memory_limit"]}
       podAnnotations:
         backup.velero.io/backup-volumes: data
+      extraEnvVars:
+        - name: GF_ANALYTICS_REPORTING_ENABLED
+          value: "false"
+        - name: GF_ANALYTICS_CHECK_FOR_UPDATES
+          value: "false"
+        - name: GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES
+          value: "false"
+        %{if length(local.grafana["root_url"]) > 0}
+        - name: GF_SERVER_ROOT_URL
+          value: ${local.grafana["root_url"]}
+        %{endif}
 
     persistence:
       enabled: true
-      %{if length(local.grafana["pvc"]) > 0}existingClaim: ${local.grafana["pvc"]}%{endif}
-
-    ingress:
-      enabled: ${length(local.grafana["ingress_hostname"]) > 0}
-    %{if length(local.grafana["ingress_hostname"]) > 0}
-      hostname: ${local.grafana["ingress_hostname"]}
-      %{if length(local.grafana["ingress_whitelist_ips"]) > 0}
-      annotations:
-        nginx.ingress.kubernetes.io/whitelist-source-range: ${local.grafana["ingress_whitelist_ips"]}
-      %{endif}
-      tls: false  # defined in extraTls
-      extraTls:
-      - hosts:
-          - ${local.grafana["ingress_tls_cert_host"]}
-        secretName: ${local.grafana["ingress_tls_cert_secret"]}
-      ingressClassName: "nginx"
-    %{endif}
 
     volumePermissions:
       enabled: ${local.grafana["fix_volume_permissions"]}
