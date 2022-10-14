@@ -58,6 +58,12 @@ variable "cert-manager" {
   default     = {}
 }
 
+variable "falco" {
+  description = "Customize falco chart, see `falco.tf` for supported values"
+  type        = any
+  default     = {}
+}
+
 variable "kubernetes-replicator" {
   description = "Customize kubernetes-replicator chart, see `kubernetes-replicator.tf` for supported values"
   type        = any

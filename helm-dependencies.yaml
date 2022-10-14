@@ -29,3 +29,6 @@ dependencies:
   - name: kubernetes-replicator
     version: v2.7.3
     repository: https://helm.mittwald.de
+  - name: falco
+    version: 2.0.18
+    repository: https://falcosecurity.github.io/charts
