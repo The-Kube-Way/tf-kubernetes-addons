@@ -52,7 +52,7 @@ VALUES
 }
 
 resource "kubernetes_manifest" "falco_service_monitor" {
-  count = local.falco["service_monitor"] ? 1 : 0
+  count = local.falco["enabled"] && local.falco["service_monitor"] ? 1 : 0
   manifest = {
     "apiVersion" : "monitoring.coreos.com/v1",
     "kind" : "ServiceMonitor",
