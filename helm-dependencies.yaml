@@ -32,3 +32,6 @@ dependencies:
   - name: falco
     version: 2.0.18
     repository: https://falcosecurity.github.io/charts
+  - name: tigera-operator
+    version: v3.24.2
+    repository: https://docs.projectcalico.org/charts
