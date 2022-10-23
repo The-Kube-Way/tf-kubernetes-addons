@@ -9,7 +9,7 @@ dependencies:
     version: 6.5.1
     repository: https://grafana.github.io/helm-charts
   - name: grafana
-    version: 8.2.11
+    version: 8.2.12
     repository: https://charts.bitnami.com/bitnami
   - name: kubernetes-event-exporter
     version: 2.0.0
@@ -30,7 +30,7 @@ dependencies:
     version: v2.7.3
     repository: https://helm.mittwald.de
   - name: falco
-    version: 2.0.18
+    version: 2.2.0
     repository: https://falcosecurity.github.io/charts
   - name: tigera-operator
     version: v3.24.2
