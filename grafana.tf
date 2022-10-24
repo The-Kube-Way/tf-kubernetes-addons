@@ -13,6 +13,7 @@ locals {
       memory_limit           = "256Mi"
       root_url               = ""
       fix_volume_permissions = false
+      users_viewers_can_edit = false # Allow viewers to use Explore and perform temporary edits on panels
     },
     var.grafana
   )
@@ -43,6 +44,10 @@ locals {
           value: "false"
         - name: GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES
           value: "false"
+        - name: GF_USERS_USER_INVITE_MAX_LIFETIME_DURATION
+          value: "7d"
+        - name: GF_USERS_VIEWERS_CAN_EDIT
+          value: "${local.grafana["users_viewers_can_edit"]}"
         %{if length(local.grafana["root_url"]) > 0}
         - name: GF_SERVER_ROOT_URL
           value: ${local.grafana["root_url"]}
