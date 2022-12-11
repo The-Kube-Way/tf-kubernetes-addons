@@ -8,7 +8,7 @@ locals {
       repository      = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].repository
       chart_version   = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].version
       namespace       = "loki"
-      loki_address    = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push"
+      loki_address    = "http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push"
       cpu_limit       = "200m"
       memory_limit    = "64Mi"
       service_monitor = local.kube-prometheus["enabled"]

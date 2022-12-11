@@ -8,68 +8,121 @@ locals {
       repository             = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].repository
       chart_version          = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].version
       namespace              = "loki"
-      s3_enabled             = true
       s3_endpoint            = ""
       s3_region              = ""
       s3_bucket              = ""
       s3_access_key_id       = ""
       s3_secret_access_key   = ""
-      cpu_limit              = "200m"
-      memory_limit           = "256Mi"
-      persistence            = false
       default_network_policy = true
       service_monitor        = local.kube-prometheus["enabled"]
+      pvc_size               = "5Gi"
+      storage_class          = "" # dynamic provisioning
     },
     var.loki
   )
 
   values_loki = <<VALUES
-config:
+global:
+  dnsService: coredns
+
+fullnameOverride: loki
+
+loki:
   auth_enabled: false
   server:
     log_level: info
   limits_config:
+    enforce_metric_name: false
+    reject_old_samples: true
+    reject_old_samples_max_age: 168h
+    max_cache_freshness_per_query: 10m
+    split_queries_by_interval: 15m
     max_entries_limit_per_query: 50000
-  schema_config:
-    configs:
-      - from: 2020-10-24
-        store: boltdb-shipper
-        object_store: %{if local.loki["s3_enabled"]}s3%{else}filesystem%{endif}
-        schema: v11
-        index:
-          prefix: loki_index_
-          period: 24h
-  storage_config:
-    %{if local.loki["s3_enabled"]}
-    aws:
-      bucketnames: ${local.loki["s3_bucket"]}
+  commonConfig:
+    replication_factor: 3
+  storage:
+    type: s3
+    bucketNames: 
+      chunks: ${local.loki["s3_bucket"]}
+      ruler: ${local.loki["s3_bucket"]}
+      admin: ${local.loki["s3_bucket"]}
+    s3:
       endpoint: ${local.loki["s3_endpoint"]}
       region: ${local.loki["s3_region"]}
-      access_key_id: ${local.loki["s3_access_key_id"]}
-      secret_access_key: ${local.loki["s3_secret_access_key"]}
-    %{endif}
-    boltdb_shipper:
-      shared_store: %{if local.loki["s3_enabled"]}s3%{else}filesystem%{endif}
-  compactor:
-    shared_store: %{if local.loki["s3_enabled"]}s3%{else}filesystem%{endif}
+      secretAccessKey: $${S3_SECRET_ACCESS_KEY}
+      accessKeyId: $${S3_ACCESS_KEY_ID}
+      s3ForcePathStyle: true
+      insecure: false
+      http_config: {}
   analytics:
     reporting_enabled: false
 
-persistence:
-  enabled: ${local.loki["persistence"]}
+monitoring:
+  serviceMonitor:
+    enabled: ${local.loki["service_monitor"]}
+  selfMonitoring:
+    enabled: false
+    grafanaAgent:
+      installOperator: false
+    lokiCanary:
+      enabled: false
+test:
+  enabled: false
 
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
-    cpu: ${local.loki["cpu_limit"]}
-    memory: ${local.loki["memory_limit"]}
+write:
+  replicas: 2
+  resources: {}
+  extraArgs:
+    - -config.expand-env=true
+  extraEnvFrom:
+    - secretRef:
+        name: loki-s3-credentials
+  persistence:
+    size: ${local.loki["pvc_size"]}
+    storageClass: ${local.loki["storage_class"]}
 
-serviceMonitor:
-  enabled: ${local.loki["service_monitor"]}
-  interval: "60s"
+read:
+  replicas: 2
+  resources: {}
+  extraArgs:
+    - -config.expand-env=true
+  extraEnvFrom:
+    - secretRef:
+        name: loki-s3-credentials
+  persistence:
+    size: ${local.loki["pvc_size"]}
+    storageClass: ${local.loki["storage_class"]}
+
+gateway:
+  enabled: true
+  replicas: 1
+  verboseLogging: true
+  resources: {}
+  ingress:
+    enabled: false
+  basicAuth:
+    enabled: false
+
+networkPolicy:
+  enabled: false
 VALUES
+}
+
+
+resource "kubernetes_secret" "loki_s3_credentials" {
+  count = local.loki["enabled"] ? 1 : 0
+  metadata {
+    name      = "loki-s3-credentials"
+    namespace = local.loki["namespace"]
+  }
+  data = {
+    S3_ACCESS_KEY_ID     = local.loki["s3_access_key_id"]
+    S3_SECRET_ACCESS_KEY = local.loki["s3_secret_access_key"]
+  }
+
+  depends_on = [
+    kubernetes_namespace.loki
+  ]
 }
 
 
