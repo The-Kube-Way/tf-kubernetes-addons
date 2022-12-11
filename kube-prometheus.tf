@@ -39,6 +39,9 @@ locals {
 
   values_kube-prometheus = <<VALUES
 prometheus:
+  # default intervals must not be null. See https://github.com/bitnami/charts/issues/13874
+  scrapeInterval: 1m
+  evaluationInterval: 1m
   resources:
     requests:
       cpu: ${local.kube-prometheus["prometheus_cpu_request"]}
