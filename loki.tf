@@ -51,6 +51,15 @@ loki:
       s3ForcePathStyle: true
       insecure: false
       http_config: {}
+  schemaConfig:
+    configs:
+      - from: 2022-01-11
+        store: boltdb-shipper
+        object_store: s3
+        schema: v11
+        index:
+          prefix: loki_index_
+          period: 24h
   analytics:
     reporting_enabled: false
 
