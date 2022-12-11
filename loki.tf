@@ -22,9 +22,6 @@ locals {
   )
 
   values_loki = <<VALUES
-global:
-  dnsService: coredns
-
 fullnameOverride: loki
 
 loki:
