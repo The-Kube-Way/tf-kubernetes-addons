@@ -33,5 +33,5 @@ dependencies:
     version: 2.4.6
     repository: https://falcosecurity.github.io/charts
   - name: tigera-operator
-    version: v3.24.5
+    version: v3.25.0
     repository: https://docs.projectcalico.org/charts
