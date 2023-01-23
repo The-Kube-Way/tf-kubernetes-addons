@@ -30,7 +30,7 @@ dependencies:
     version: v2.7.3
     repository: https://helm.mittwald.de
   - name: falco
-    version: 2.4.6
+    version: 2.4.7
     repository: https://falcosecurity.github.io/charts
   - name: tigera-operator
     version: v3.25.0
