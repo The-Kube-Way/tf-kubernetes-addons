@@ -49,12 +49,8 @@ Furthermore, chart values can be overwritten using `extra_values` key.
 
 Example:
 ```terraform
-locals {
-  k8s_addons_version = "master"  # Pin a specific commit hash!
-}
-
 module "k8s_base" {
-  source = "github.com/The-Kube-Way/tf-kubernetes-addons/base?ref=${local.k8s_addons_version}"
+  source = "github.com/The-Kube-Way/tf-kubernetes-addons/base"
 
   priority_classes = {
     enabled = true
@@ -66,7 +62,7 @@ module "k8s_base" {
 }
 
 module "k8s_backup" {
-  source = "github.com/The-Kube-Way/tf-kubernetes-addons/backup?ref=${local.k8s_addons_version}"
+  source = "github.com/The-Kube-Way/tf-kubernetes-addons/backup"
 
   velero = {
     enabled = true
@@ -89,7 +85,7 @@ VALUES
 }
 
 module "k8s_ingress" {
-  source = "github.com/The-Kube-Way/tf-kubernetes-addons/ingress?ref=${local.k8s_addons_version}"
+  source = "github.com/The-Kube-Way/tf-kubernetes-addons/ingress"
   ingress-nginx= {
     enabled = true
   }
@@ -99,7 +95,7 @@ module "k8s_ingress" {
 }
 
 module "k8s_monitoring" {
-  source = "github.com/The-Kube-Way/tf-kubernetes-addons/monitoring?ref=${local.k8s_addons_version}"
+  source = "github.com/The-Kube-Way/tf-kubernetes-addons/monitoring"
   kube-prometheus = {
     enabled = true
     persistence = true
@@ -134,7 +130,7 @@ VALUES
 }
 
 module "k8s_security" {
-  source = "github.com/The-Kube-Way/tf-kubernetes-addons/security?ref=${local.k8s_addons_version}"
+  source = "github.com/The-Kube-Way/tf-kubernetes-addons/security"
   falco = {
     enabled = true
   }
