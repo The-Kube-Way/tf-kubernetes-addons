@@ -3,10 +3,7 @@ locals {
     local.helm_defaults,
     {
       enabled                = false
-      name                   = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].name
-      chart                  = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].name
-      repository             = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].repository
-      chart_version          = local.helm_dependencies[index(local.helm_dependencies.*.name, "loki")].version
+      name                   = "loki"
       namespace              = "loki"
       s3_endpoint            = ""
       s3_region              = ""
@@ -146,10 +143,10 @@ resource "kubernetes_namespace" "loki" {
 resource "helm_release" "loki" {
   count                 = local.loki["enabled"] ? 1 : 0
   namespace             = local.loki["namespace"]
-  repository            = local.loki["repository"]
   name                  = local.loki["name"]
-  chart                 = local.loki["chart"]
-  version               = local.loki["chart_version"]
+  repository            = "https://grafana.github.io/helm-charts"
+  chart                 = "loki"
+  version               = "3.10.0"
   timeout               = local.loki["timeout"]
   force_update          = local.loki["force_update"]
   recreate_pods         = local.loki["recreate_pods"]

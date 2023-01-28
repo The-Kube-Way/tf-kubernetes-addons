@@ -2,12 +2,9 @@ locals {
   cert-manager = merge(
     local.helm_defaults,
     {
-      enabled       = false
-      name          = local.helm_dependencies[index(local.helm_dependencies.*.name, "cert-manager")].name
-      chart         = local.helm_dependencies[index(local.helm_dependencies.*.name, "cert-manager")].name
-      repository    = local.helm_dependencies[index(local.helm_dependencies.*.name, "cert-manager")].repository
-      chart_version = local.helm_dependencies[index(local.helm_dependencies.*.name, "cert-manager")].version
-      namespace     = "cert-manager"
+      enabled   = false
+      name      = "cert-manager"
+      namespace = "cert-manager"
     },
     var.cert-manager
   )
@@ -32,10 +29,10 @@ resource "kubernetes_namespace" "cert_manager" {
 resource "helm_release" "cert_manager" {
   count                 = local.cert-manager["enabled"] ? 1 : 0
   namespace             = local.cert-manager["namespace"]
-  repository            = local.cert-manager["repository"]
   name                  = local.cert-manager["name"]
-  chart                 = local.cert-manager["chart"]
-  version               = local.cert-manager["chart_version"]
+  repository            = "https://charts.jetstack.io"
+  chart                 = "cert-manager"
+  version               = "v1.11.0"
   timeout               = local.cert-manager["timeout"]
   force_update          = local.cert-manager["force_update"]
   recreate_pods         = local.cert-manager["recreate_pods"]

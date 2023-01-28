@@ -3,10 +3,7 @@ locals {
     local.helm_defaults,
     {
       enabled                          = false
-      name                             = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].name
-      chart                            = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].name
-      repository                       = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].repository
-      chart_version                    = local.helm_dependencies[index(local.helm_dependencies.*.name, "ingress-nginx")].version
+      name                             = "ingress-nginx"
       namespace                        = "ingress-nginx"
       cpu_limit                        = "500m"
       memory_limit                     = "256Mi"
@@ -18,7 +15,7 @@ locals {
       udp                              = {}
       kind                             = "DaemonSet"
       metrics                          = true
-      service_monitor                  = local.kube-prometheus["enabled"]
+      service_monitor                  = true
       node_selector                    = {}
       termination_grace_period         = 300
       admission_webhook                = true
@@ -91,11 +88,11 @@ resource "kubernetes_namespace" "ingress_nginx" {
 
 resource "helm_release" "ingress_nginx" {
   count                 = local.ingress-nginx["enabled"] ? 1 : 0
-  namespace             = local.ingress-nginx["namespace"]
-  repository            = local.ingress-nginx["repository"]
   name                  = local.ingress-nginx["name"]
-  chart                 = local.ingress-nginx["chart"]
-  version               = local.ingress-nginx["chart_version"]
+  namespace             = local.ingress-nginx["namespace"]
+  repository            = "https://kubernetes.github.io/ingress-nginx"
+  chart                 = "ingress-nginx"
+  version               = "4.4.2"
   timeout               = local.ingress-nginx["timeout"]
   force_update          = local.ingress-nginx["force_update"]
   recreate_pods         = local.ingress-nginx["recreate_pods"]
@@ -117,7 +114,6 @@ resource "helm_release" "ingress_nginx" {
   ]
 
   depends_on = [
-    kubernetes_namespace.ingress_nginx,
-    helm_release.kube-prometheus
+    kubernetes_namespace.ingress_nginx
   ]
 }

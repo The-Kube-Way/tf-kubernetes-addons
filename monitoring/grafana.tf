@@ -3,10 +3,7 @@ locals {
     local.helm_defaults,
     {
       enabled                = false
-      name                   = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].name
-      chart                  = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].name
-      repository             = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].repository
-      chart_version          = local.helm_dependencies[index(local.helm_dependencies.*.name, "grafana")].version
+      name                   = "grafana"
       namespace              = "default"
       create_ns              = false
       cpu_limit              = "200m"
@@ -76,10 +73,10 @@ resource "kubernetes_namespace" "grafana" {
 resource "helm_release" "grafana" {
   count                 = local.grafana["enabled"] ? 1 : 0
   namespace             = local.grafana["namespace"]
-  repository            = local.grafana["repository"]
   name                  = local.grafana["name"]
-  chart                 = local.grafana["chart"]
-  version               = local.grafana["chart_version"]
+  repository            = "https://charts.bitnami.com/bitnami"
+  chart                 = "grafana"
+  version               = "8.2.22"
   timeout               = local.grafana["timeout"]
   force_update          = local.grafana["force_update"]
   recreate_pods         = local.grafana["recreate_pods"]

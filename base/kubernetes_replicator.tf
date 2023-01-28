@@ -3,10 +3,7 @@ locals {
     local.helm_defaults,
     {
       enabled             = false
-      name                = local.helm_dependencies[index(local.helm_dependencies.*.name, "kubernetes-replicator")].name
-      chart               = local.helm_dependencies[index(local.helm_dependencies.*.name, "kubernetes-replicator")].name
-      repository          = local.helm_dependencies[index(local.helm_dependencies.*.name, "kubernetes-replicator")].repository
-      chart_version       = local.helm_dependencies[index(local.helm_dependencies.*.name, "kubernetes-replicator")].version
+      name                = "kubernetes-replicator"
       namespace           = "default"
       kubernetes_api_cidr = "" # Get with $ kubectl get endpoints kubernetes, e.g., 10.3.0.1/32. "" to disable.
       kubernetes_api_port = 443
@@ -71,10 +68,10 @@ VALUES
 resource "helm_release" "kubernetes_replicator" {
   count                 = local.kubernetes-replicator["enabled"] ? 1 : 0
   namespace             = local.kubernetes-replicator["namespace"]
-  repository            = local.kubernetes-replicator["repository"]
   name                  = local.kubernetes-replicator["name"]
-  chart                 = local.kubernetes-replicator["chart"]
-  version               = local.kubernetes-replicator["chart_version"]
+  repository            = "https://helm.mittwald.de"
+  chart                 = "kubernetes-replicator"
+  version               = "v2.7.3"
   timeout               = local.kubernetes-replicator["timeout"]
   force_update          = local.kubernetes-replicator["force_update"]
   recreate_pods         = local.kubernetes-replicator["recreate_pods"]

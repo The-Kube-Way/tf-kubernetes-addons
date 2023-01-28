@@ -22,6 +22,4 @@ locals {
     local.helm_defaults_defaults,
     var.helm_defaults
   )
-
-  helm_dependencies = yamldecode(file("${path.module}/helm-dependencies.yaml"))["dependencies"]
 }

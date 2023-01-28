@@ -3,15 +3,12 @@ locals {
     local.helm_defaults,
     {
       enabled         = false
-      name            = local.helm_dependencies[index(local.helm_dependencies.*.name, "falco")].name
-      chart           = local.helm_dependencies[index(local.helm_dependencies.*.name, "falco")].name
-      repository      = local.helm_dependencies[index(local.helm_dependencies.*.name, "falco")].repository
-      chart_version   = local.helm_dependencies[index(local.helm_dependencies.*.name, "falco")].version
-      namespace       = "default"
+      name            = "falco"
+      namespace       = "falco"
       driver_kind     = "module"
-      priority_class  = "normal"
+      priority_class  = "highest-priority"
       webui_enabled   = false
-      service_monitor = local.kube-prometheus["enabled"]
+      service_monitor = true
     },
     var.falco
   )
@@ -51,6 +48,16 @@ falcosidekick:
 VALUES
 }
 
+resource "kubernetes_namespace" "falco" {
+  count = local.falco["enabled"] ? 1 : 0
+  metadata {
+    name = local.falco["namespace"]
+    labels = {
+      name = local.falco["namespace"]
+    }
+  }
+}
+
 resource "kubernetes_manifest" "falco_service_monitor" {
   count = local.falco["enabled"] && local.falco["service_monitor"] ? 1 : 0
   manifest = {
@@ -80,10 +87,10 @@ resource "kubernetes_manifest" "falco_service_monitor" {
 resource "helm_release" "falco" {
   count                 = local.falco["enabled"] ? 1 : 0
   namespace             = local.falco["namespace"]
-  repository            = local.falco["repository"]
   name                  = local.falco["name"]
-  chart                 = local.falco["chart"]
-  version               = local.falco["chart_version"]
+  repository            = "https://falcosecurity.github.io/charts"
+  chart                 = "falco"
+  version               = "2.4.6"
   timeout               = local.falco["timeout"]
   force_update          = local.falco["force_update"]
   recreate_pods         = local.falco["recreate_pods"]
@@ -102,5 +109,9 @@ resource "helm_release" "falco" {
   values = [
     local.values_falco,
     local.falco["extra_values"]
+  ]
+
+  depends_on = [
+    kubernetes_namespace.falco
   ]
 }

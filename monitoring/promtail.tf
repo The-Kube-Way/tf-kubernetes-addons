@@ -3,10 +3,7 @@ locals {
     local.helm_defaults,
     {
       enabled         = false
-      name            = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].name
-      chart           = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].name
-      repository      = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].repository
-      chart_version   = local.helm_dependencies[index(local.helm_dependencies.*.name, "promtail")].version
+      name            = "promtail"
       namespace       = "loki"
       loki_address    = "http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push"
       cpu_limit       = "200m"
@@ -50,10 +47,10 @@ VALUES
 resource "helm_release" "promtail" {
   count                 = local.promtail["enabled"] ? 1 : 0
   namespace             = local.promtail["namespace"]
-  repository            = local.promtail["repository"]
   name                  = local.promtail["name"]
-  chart                 = local.promtail["chart"]
-  version               = local.promtail["chart_version"]
+  repository            = "https://grafana.github.io/helm-charts"
+  chart                 = "promtail"
+  version               = "6.8.1"
   timeout               = local.promtail["timeout"]
   force_update          = local.promtail["force_update"]
   recreate_pods         = local.promtail["recreate_pods"]

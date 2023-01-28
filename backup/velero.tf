@@ -3,10 +3,7 @@ locals {
     local.helm_defaults,
     {
       enabled               = false
-      name                  = local.helm_dependencies[index(local.helm_dependencies.*.name, "velero")].name
-      chart                 = local.helm_dependencies[index(local.helm_dependencies.*.name, "velero")].name
-      repository            = local.helm_dependencies[index(local.helm_dependencies.*.name, "velero")].repository
-      chart_version         = local.helm_dependencies[index(local.helm_dependencies.*.name, "velero")].version
+      name                  = "velero"
       namespace             = "velero"
       velero_priority_class = "high-priority"
       velero_cpu_limit      = "1000m"
@@ -18,7 +15,7 @@ locals {
       restic_priority_class = "high-priority"
       restic_cpu_limit      = "1000m"
       restic_memory_limit   = "1Gi"
-      backup_storage_location = {
+      default_backup_storage_location = {
         enabled             = false
         read_only           = false
         s3_url              = ""
@@ -26,7 +23,7 @@ locals {
         s3_force_path_style = false
         s3_bucket           = ""
       }
-      service_monitor = local.kube-prometheus["enabled"]
+      service_monitor = true
     },
     var.velero
   )
@@ -60,22 +57,22 @@ upgradeCRDs: true
 
 configuration:
   provider: aws
-%{if local.velero["backup_storage_location"]["enabled"]}
+%{if local.velero["default_backup_storage_location"]["enabled"]}
   backupStorageLocation:
     name: default
-    bucket: ${local.velero["backup_storage_location"]["s3_bucket"]}
+    bucket: ${local.velero["default_backup_storage_location"]["s3_bucket"]}
     default: true
-    accessMode: %{if local.velero["backup_storage_location"]["read_only"]}ReadOnly%{else}ReadWrite%{endif}
+    accessMode: %{if local.velero["default_backup_storage_location"]["read_only"]}ReadOnly%{else}ReadWrite%{endif}
     config:
-      s3Url: ${local.velero["backup_storage_location"]["s3_url"]}
-      region: ${local.velero["backup_storage_location"]["s3_region"]}
-      s3ForcePathStyle: ${local.velero["backup_storage_location"]["s3_force_path_style"]}
+      s3Url: ${local.velero["default_backup_storage_location"]["s3_url"]}
+      region: ${local.velero["default_backup_storage_location"]["s3_region"]}
+      s3ForcePathStyle: ${local.velero["default_backup_storage_location"]["s3_force_path_style"]}
 %{endif}
 
 credentials:
   existingSecret: velero-credentials
 
-backupsEnabled: ${local.velero["backup_storage_location"]["enabled"]}
+backupsEnabled: ${local.velero["default_backup_storage_location"]["enabled"]}
 snapshotsEnabled: false
 
 deployRestic: ${local.velero["deploy_restic"]}
@@ -146,10 +143,10 @@ resource "kubernetes_secret" "restic_password" {
 resource "helm_release" "velero" {
   count                 = local.velero["enabled"] ? 1 : 0
   namespace             = local.velero["namespace"]
-  repository            = local.velero["repository"]
   name                  = local.velero["name"]
-  chart                 = local.velero["chart"]
-  version               = local.velero["chart_version"]
+  chart                 = "velero"
+  repository            = "https://vmware-tanzu.github.io/helm-charts"
+  version               = "2.32.6"
   timeout               = local.velero["timeout"]
   force_update          = local.velero["force_update"]
   recreate_pods         = local.velero["recreate_pods"]
@@ -173,7 +170,6 @@ resource "helm_release" "velero" {
   depends_on = [
     kubernetes_namespace.velero,
     kubernetes_secret.velero_credentials,
-    kubernetes_secret.restic_password,
-    helm_release.kube-prometheus
+    kubernetes_secret.restic_password
   ]
 }

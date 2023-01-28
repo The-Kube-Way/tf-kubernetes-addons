@@ -13,14 +13,10 @@
     ":automergeMinor"
   ],
   "baseBranches": ["master"],
-  "enabledManagers": ["helmv3", "github-actions", "pre-commit", "terraform"],
+  "enabledManagers": ["terraform", "github-actions", "pre-commit"],
   "semanticCommits": "enabled",
   "automergeType": "pr",
   "automergeComment": "renovate:merge",
-  "helmv3": {
-    "enabled": true,
-    "fileMatch": ["(^|/)helm-dependencies.yaml$"]
-  },
   "packageRules": [
     {
       "matchManagers": ["github-actions"],
@@ -33,13 +29,16 @@
       "semanticCommitType": "chore"
     },
     {
-      "matchManagers": ["helmv3"],
+      "matchManagers": ["terraform"],
+      "matchDatasources": "helm",
       "semanticCommitScope": "charts",
       "semanticCommitType": "fix",
       "matchUpdateTypes": ["patch", "digest"]
+      
     },
     {
-      "matchManagers": ["helmv3"],
+      "matchManagers": ["terraform"],
+      "matchDatasources": "helm",
       "semanticCommitScope": "charts",
       "semanticCommitType": "feat",
       "matchUpdateTypes": ["major", "minor"]

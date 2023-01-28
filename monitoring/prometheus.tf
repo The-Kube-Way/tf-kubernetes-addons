@@ -3,10 +3,7 @@ locals {
     local.helm_defaults,
     {
       enabled                     = false
-      name                        = "prom1"
-      chart                       = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].name
-      repository                  = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].repository
-      chart_version               = local.helm_dependencies[index(local.helm_dependencies.*.name, "kube-prometheus")].version
+      name                        = "prometheus"
       namespace                   = "prometheus"
       prometheus_cpu_request      = "50m"
       prometheus_cpu_limit        = "500m"
@@ -122,10 +119,10 @@ resource "kubernetes_namespace" "prometheus" {
 resource "helm_release" "kube-prometheus" {
   count                 = local.kube-prometheus["enabled"] ? 1 : 0
   namespace             = local.kube-prometheus["namespace"]
-  repository            = local.kube-prometheus["repository"]
   name                  = local.kube-prometheus["name"]
-  chart                 = local.kube-prometheus["chart"]
-  version               = local.kube-prometheus["chart_version"]
+  repository            = "https://charts.bitnami.com/bitnami"
+  chart                 = "kube-prometheus"
+  version               = "8.3.2"
   timeout               = local.kube-prometheus["timeout"]
   force_update          = local.kube-prometheus["force_update"]
   recreate_pods         = local.kube-prometheus["recreate_pods"]
