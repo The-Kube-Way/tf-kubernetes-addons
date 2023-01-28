@@ -67,8 +67,8 @@ monitoring:
     enabled: false
     grafanaAgent:
       installOperator: false
-    lokiCanary:
-      enabled: false
+  lokiCanary:
+    enabled: false
 test:
   enabled: false
 
