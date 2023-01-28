@@ -85,6 +85,9 @@ prometheus:
          memory: ${local.kube-prometheus["thanos_memory_limit"]}
 
 alertmanager:
+  persistence:
+    enabled: true
+    size: 3Gi
   requests:
     cpu: ${local.kube-prometheus["alertmanager_cpu_request"]}
     memory: ${local.kube-prometheus["alertmanager_memory_request"]}
