@@ -28,6 +28,8 @@ This repository is composed on independent Terraform modules.
   - Tigera Operator
 - Security
   - Falco
+- Scaling
+  - Cluster autoscaler
 
 ## Usage
 
