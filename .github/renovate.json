@@ -30,7 +30,7 @@
     },
     {
       "matchManagers": ["terraform"],
-      "matchDatasources": "helm",
+      "matchDepTypes": "helm_release",
       "semanticCommitScope": "charts",
       "semanticCommitType": "fix",
       "matchUpdateTypes": ["patch", "digest"]
@@ -38,7 +38,7 @@
     },
     {
       "matchManagers": ["terraform"],
-      "matchDatasources": "helm",
+      "matchDepTypes": "helm_release",
       "semanticCommitScope": "charts",
       "semanticCommitType": "feat",
       "matchUpdateTypes": ["major", "minor"]
