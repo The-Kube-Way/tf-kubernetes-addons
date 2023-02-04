@@ -31,20 +31,20 @@
     {
       "matchManagers": ["terraform"],
       "matchDepTypes": "helm_release",
+      "matchUpdateTypes": ["patch", "digest"],
       "semanticCommitScope": "charts",
-      "semanticCommitType": "fix",
-      "matchUpdateTypes": ["patch", "digest"]
-      
+      "semanticCommitType": "fix"
     },
     {
       "matchManagers": ["terraform"],
       "matchDepTypes": "helm_release",
+      "matchUpdateTypes": ["major", "minor"],
       "semanticCommitScope": "charts",
-      "semanticCommitType": "feat",
-      "matchUpdateTypes": ["major", "minor"]
+      "semanticCommitType": "feat"
     },
     {
       "matchManagers": ["terraform"],
+      "matchDepTypes": "required_version",
       "semanticCommitScope": "tf",
       "semanticCommitType": "feat",
       "automerge": false
