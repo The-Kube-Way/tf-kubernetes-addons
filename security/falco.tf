@@ -90,7 +90,7 @@ resource "helm_release" "falco" {
   name                  = local.falco["name"]
   repository            = "https://falcosecurity.github.io/charts"
   chart                 = "falco"
-  version               = "2.4.7"
+  version               = "2.5.5"
   timeout               = local.falco["timeout"]
   force_update          = local.falco["force_update"]
   recreate_pods         = local.falco["recreate_pods"]
