@@ -92,7 +92,7 @@ resource "helm_release" "ingress_nginx" {
   namespace             = local.ingress-nginx["namespace"]
   repository            = "https://kubernetes.github.io/ingress-nginx"
   chart                 = "ingress-nginx"
-  version               = "4.5.0"
+  version               = "4.5.2"
   timeout               = local.ingress-nginx["timeout"]
   force_update          = local.ingress-nginx["force_update"]
   recreate_pods         = local.ingress-nginx["recreate_pods"]
