@@ -32,7 +32,7 @@ resource "helm_release" "cert_manager" {
   name                  = local.cert-manager["name"]
   repository            = "https://charts.jetstack.io"
   chart                 = "cert-manager"
-  version               = "v1.11.0"
+  version               = "v1.11.1"
   timeout               = local.cert-manager["timeout"]
   force_update          = local.cert-manager["force_update"]
   recreate_pods         = local.cert-manager["recreate_pods"]
