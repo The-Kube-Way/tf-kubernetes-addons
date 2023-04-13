@@ -71,7 +71,7 @@ resource "helm_release" "kubernetes_replicator" {
   name                  = local.kubernetes-replicator["name"]
   repository            = "https://helm.mittwald.de"
   chart                 = "kubernetes-replicator"
-  version               = "v2.7.3"
+  version               = "2.8.0"
   timeout               = local.kubernetes-replicator["timeout"]
   force_update          = local.kubernetes-replicator["force_update"]
   recreate_pods         = local.kubernetes-replicator["recreate_pods"]
