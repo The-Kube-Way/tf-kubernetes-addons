@@ -96,7 +96,7 @@ resource "helm_release" "cluster_autoscaler" {
   name                  = local.cluster-autoscaler["name"]
   repository            = "https://kubernetes.github.io/autoscaler"
   chart                 = "cluster-autoscaler"
-  version               = "9.28.0"
+  version               = "9.29.0"
   timeout               = local.cluster-autoscaler["timeout"]
   force_update          = local.cluster-autoscaler["force_update"]
   recreate_pods         = local.cluster-autoscaler["recreate_pods"]
