@@ -125,7 +125,7 @@ resource "helm_release" "kube-prometheus" {
   name                  = local.kube-prometheus["name"]
   repository            = "https://charts.bitnami.com/bitnami"
   chart                 = "kube-prometheus"
-  version               = "8.10.4"
+  version               = "8.11.0"
   timeout               = local.kube-prometheus["timeout"]
   force_update          = local.kube-prometheus["force_update"]
   recreate_pods         = local.kube-prometheus["recreate_pods"]
