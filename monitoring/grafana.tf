@@ -76,7 +76,7 @@ resource "helm_release" "grafana" {
   name                  = local.grafana["name"]
   repository            = "https://charts.bitnami.com/bitnami"
   chart                 = "grafana"
-  version               = "8.4.4"
+  version               = "8.4.5"
   timeout               = local.grafana["timeout"]
   force_update          = local.grafana["force_update"]
   recreate_pods         = local.grafana["recreate_pods"]
