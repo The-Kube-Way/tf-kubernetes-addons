@@ -50,7 +50,7 @@ resource "helm_release" "promtail" {
   name                  = local.promtail["name"]
   repository            = "https://grafana.github.io/helm-charts"
   chart                 = "promtail"
-  version               = "6.11.2"
+  version               = "6.11.3"
   timeout               = local.promtail["timeout"]
   force_update          = local.promtail["force_update"]
   recreate_pods         = local.promtail["recreate_pods"]
