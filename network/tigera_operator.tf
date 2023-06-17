@@ -33,7 +33,7 @@ resource "helm_release" "tigera_operator" {
   name                  = local.tigera-operator["name"]
   repository            = "https://docs.projectcalico.org/charts"
   chart                 = "tigera-operator"
-  version               = "v3.26.0"
+  version               = "v3.26.1"
   timeout               = local.tigera-operator["timeout"]
   force_update          = local.tigera-operator["force_update"]
   recreate_pods         = local.tigera-operator["recreate_pods"]
