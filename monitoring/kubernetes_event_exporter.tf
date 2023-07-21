@@ -40,7 +40,7 @@ resource "helm_release" "kubernetes_event_exporter" {
   name                  = local.kubernetes_event_exporter["name"]
   repository            = "https://charts.bitnami.com/bitnami"
   chart                 = "kubernetes-event-exporter"
-  version               = "2.4.5"
+  version               = "2.4.6"
   timeout               = local.kubernetes_event_exporter["timeout"]
   force_update          = local.kubernetes_event_exporter["force_update"]
   recreate_pods         = local.kubernetes_event_exporter["recreate_pods"]
