@@ -146,7 +146,7 @@ resource "helm_release" "loki" {
   name                  = local.loki["name"]
   repository            = "https://grafana.github.io/helm-charts"
   chart                 = "loki"
-  version               = "3.10.0"
+  version               = "5.10.0"
   timeout               = local.loki["timeout"]
   force_update          = local.loki["force_update"]
   recreate_pods         = local.loki["recreate_pods"]
