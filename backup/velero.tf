@@ -146,7 +146,7 @@ resource "helm_release" "velero" {
   name                  = local.velero["name"]
   chart                 = "velero"
   repository            = "https://vmware-tanzu.github.io/helm-charts"
-  version               = "2.32.6"
+  version               = "4.4.1"
   timeout               = local.velero["timeout"]
   force_update          = local.velero["force_update"]
   recreate_pods         = local.velero["recreate_pods"]
