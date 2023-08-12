@@ -1,7 +1,8 @@
 # Common Kubernetes helm charts using Terraform
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![tf-kubernetes-addons](https://github.com/The-Kube-Way/tf-kubernetes-addons/actions/workflows/terraform.yaml/badge.svg?branch=master)](https://github.com/The-Kube-Way/tf-kubernetes-addons/actions/workflows/terraform.yaml)
+[![Project Status: Abandoned – Initial development has started, but there has not yet been a stable, usable release; the project has been abandoned and the author(s) do not intend on continuing development.](https://www.repostatus.org/badges/latest/abandoned.svg)](https://www.repostatus.org/#abandoned)
+
+⚠️ **Open-source version of this project is not maintained anymore, sorry! (but feel free to fork!)**
 
 This project aims to provide widely used Helm Charts as Terraform modules to reduce the cost of maintaining multiple homogeneous clusters.
 
